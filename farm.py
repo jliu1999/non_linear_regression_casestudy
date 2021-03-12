@@ -1,4 +1,3 @@
-from numpy.lib.ufunclike import isneginf
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
