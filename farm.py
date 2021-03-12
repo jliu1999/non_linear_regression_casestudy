@@ -194,7 +194,7 @@ class ColumnClipper:
         return self.fit(X,y).transform(X,y)
 
 
-max_features = 10
+max_features = 20
 
 pipeline = Pipeline([ 
     ('sale_date_to_year', SaleDate_to_Year()),
@@ -207,6 +207,7 @@ pipeline = Pipeline([
 
 
 tf_model = Sequential()
+tf_model.add(Dense(256, activation = 'relu'))
 tf_model.add(Dense(128, activation = 'relu'))
 tf_model.add(Dense(64, activation = 'relu'))
 tf_model.add(Dense(32, activation = 'relu'))
@@ -224,7 +225,7 @@ if __name__ == '__main__':
     
     except:
         print('Could not find prepared data, so generating it anew')
-        frac = .75
+        frac = 1
         df = pd.read_csv('data/Train.zip', low_memory = False).sample(frac = frac).reset_index(drop = True)
 
         y = np.log(df.pop('SalePrice'))
@@ -241,7 +242,14 @@ if __name__ == '__main__':
     # model = RFR(n_estimators = 400, max_depth = 10, max_features = 'sqrt')
     # model = LR()
     
-    tf_model.fit(X_train, y_train, epochs = 20)
+    history = tf_model.fit(X_train, y_train, epochs = 30, validation_data = (X_test, y_test)).history
 
 
     print(mse(y_test, tf_model.predict(X_test))**.5)
+
+    fig, ax = plt.subplots()
+    ax.plot(history['loss'], label = 'Train')
+    ax.plot(history['val_loss'], label = 'Test')
+    ax.set_yscale('log')
+    plt.legend()
+    plt.show()
