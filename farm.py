@@ -9,12 +9,8 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.ensemble import RandomForestRegressor as RFR
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.linear_model import LinearRegression as LR
-
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
-
-
-
 
 
 class SaleDate_to_Year:
@@ -39,7 +35,6 @@ class SaleDate_to_Year:
 
     def __repr__(self):
             return f'Convert Saledate to Year'
-
 
 class NaNFiller:
     '''Fill any NaN values with column means
@@ -69,7 +64,6 @@ class NaNFiller:
 
     def __repr__(self):
             return f'Fill NaN values with the mean of the columns'
-
 
 class TooManyCategoriesDropper:
     '''Drop any categorical column that has too many values to use.
@@ -101,7 +95,6 @@ class TooManyCategoriesDropper:
     def __repr__(self):
             return f'ColumnDropper for columns with more than {self.max_values} values'
     
-
 class ColumnOneHotter:
     '''Preform OneHotEncoding on any object column with less than max_value unique values
     '''
@@ -193,7 +186,6 @@ class ColumnClipper:
     def fit_transform(self, X, y=None):
         return self.fit(X,y).transform(X,y)
 
-
 max_features = 20
 
 pipeline = Pipeline([ 
@@ -205,7 +197,6 @@ pipeline = Pipeline([
     ('NaNFiller', NaNFiller())
                     ])
 
-
 tf_model = Sequential()
 tf_model.add(Dense(256, activation = 'relu'))
 tf_model.add(Dense(128, activation = 'relu'))
@@ -215,8 +206,6 @@ tf_model.add(Dense(1, activation = 'linear'))
 tf_model.compile(optimizer = 'adam', loss = 'mse')
 
 if __name__ == '__main__':
-
-
 
     try:
         X = pd.read_csv('prepared_data.csv')
@@ -242,8 +231,7 @@ if __name__ == '__main__':
     # model = RFR(n_estimators = 400, max_depth = 10, max_features = 'sqrt')
     # model = LR()
     
-    history = tf_model.fit(X_train, y_train, epochs = 30, validation_data = (X_test, y_test)).history
-
+    history = tf_model.fit(X_train, y_train, epochs = 20, validation_data = (X_test, y_test)).history
 
     print(mse(y_test, tf_model.predict(X_test))**.5)
 
